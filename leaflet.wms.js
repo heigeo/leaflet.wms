@@ -151,17 +151,23 @@ L.WMS.Overlay = L.LayerGroup.extend({
         'transparent': false
     },
 
-    'initialize': function(url, params) {
+    'initialize': function(url, options) {
         this._url = url;
 
-        // Move non-WMS parameters to options object
-        var options = {};
-        ['crs', 'uppercase', 'tiled', 'attribution'].forEach(function(opt) {
-             if (params[opt]) {
-                 options[opt] = params[opt];
-                 delete params[opt];
+        // Move WMS parameters to params object
+        var optNames = {
+            'crs': true,
+            'uppercase': true,
+            'tiled': true,
+            'attribution': true
+        };
+        var params = {};
+        for (var opt in options) {
+             if (options.hasOwnProperty(opt) && !optNames[opt]) {
+                 params[opt] = options[opt];
+                 delete options[opt];
              }
-        });
+        }
         L.setOptions(this, options);
         this.wmsParams = L.extend({}, this.defaultWmsParams, params);
     },
@@ -183,6 +189,10 @@ L.WMS.Overlay = L.LayerGroup.extend({
     'onRemove': function(map) {
         if (this._currentOverlay) {
             map.removeLayer(this._currentOverlay);
+            delete this._currentOverlay;
+        }
+        if (this._currentUrl) {
+            delete this._currentUrl;
         }
     },
 

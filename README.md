@@ -25,6 +25,8 @@ for leaflet.
 
 Parts of this plugin were inspired by the [esri-leaflet] plugin.
 
+## [Demo](http://heigeo.github.io/leaflet.wms)
+
 ## Features 
 
  * "Single-tile" auto-updating WMS overlay

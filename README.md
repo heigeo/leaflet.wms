@@ -27,17 +27,29 @@ Parts of this plugin were inspired by the [esri-leaflet] plugin.
 
 ## Features 
 
- * Single request for multiple layers coming from the same WMS source
- * Single-tile WMS (coming soon)
+ * "Single-tile" auto-updating WMS overlay
+ * Use single server-composited image for layers coming from the same source
  * Layer identify (eventually)
  * Pull requests welcome!
 
 ## Usage:
 
 ```javascript
-var s = L.WMS.source("http://example.com/mapserv");
-s.getLayer("layer1").addTo("map");
-s.getLayer("layer2").addTo("map");
+
+// Default usage (uses L.WMS.Overlay)
+var source = L.WMS.source("http://example.com/mapserv", {
+    'transparent': true
+});
+source.getLayer("layer1").addTo(map);
+source.getLayer("layer2").addTo(map);
+
+// Tile mode (Uses L.WMS.TileLayer)
+var s = L.WMS.source("http://example.com/mapserv", {
+    'transparent': true,
+    'tiled': true
+});
+source.getLayer("layer1").addTo(map);
+source.getLayer("layer2").addTo(map);
 
 ```
 

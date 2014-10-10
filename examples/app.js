@@ -8,33 +8,42 @@ requirejs.config({
 define(['leaflet', 'leaflet.wms'],
 function(L) {
 
-// Map configuration
-var map = L.map('map');
-map.setView([45, -93.2], 6);
+var overlayMap = createMap('overlay-map', false);
+var tiledMap = createMap('tiled-map', true);
 
-var basemaps = {
-    'Basemap': basemap().addTo(map)
-};
+function createMap(div, tiled) {
+    // Map configuration
+    var map = L.map(div);
+    map.setView([45, -93.2], 6);
 
-// Add WMS source/layers
-var source = L.WMS.source(
-    "http://webservices.nationalatlas.gov/wms",
-    {
-        "format": "image/png",
-        "transparent": "true",
-        "attribution": "NationalAtlas.gov"
-    }
-);
+    var basemaps = {
+        'Basemap': basemap().addTo(map),
+        'Blank': blank()
+    };
 
-var layers = {
-    'Airports': source.getLayer("airports"),
-    'Lakes & Rivers': source.getLayer("lakesrivers"),
-    'Time Zones': source.getLayer("timezones"),
-    'State Capitals': source.getLayer("statecap")
-};
+    // Add WMS source/layers
+    var source = L.WMS.source(
+        "http://webservices.nationalatlas.gov/wms",
+        {
+            "format": "image/png",
+            "transparent": "true",
+            "attribution": "<a href='http://nationalatlas.gov'>NationalAtlas.gov</a>",
+            "tiled": tiled
+        }
+    );
 
-// Create layer control
-L.control.layers(basemaps, layers).addTo(map);
+    var layers = {
+        'Airports': source.getLayer("airports"),
+        'Lakes & Rivers': source.getLayer("lakesrivers"),
+        'Time Zones': source.getLayer("timezones"),
+        'State Capitals': source.getLayer("statecap")
+    };
+
+    // Create layer control
+    L.control.layers(basemaps, layers).addTo(map);
+
+    return map;
+}
 
 function basemap() {
     // Attribution (https://gist.github.com/mourner/1804938)
@@ -48,8 +57,18 @@ function basemap() {
     });
 }
 
+function blank() {
+    var layer = new L.Layer();
+    layer.onAdd = layer.onRemove = function() {};
+    return layer;
+}
+
+// Export maps for console experimentation
 return {
-   'map': map
+    'maps': {
+        'overlay': overlayMap,
+        'tiled': tiledMap
+    }
 };
 
 });

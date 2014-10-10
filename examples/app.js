@@ -17,8 +17,8 @@ function createMap(div, tiled) {
     map.setView([45, -93.2], 6);
 
     var basemaps = {
-        'Basemap': basemap().addTo(map),
-        'Blank': blank()
+        'Basemap': basemap(),
+        'Blank': blank().addTo(map)
     };
 
     // Add WMS source/layers

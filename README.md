@@ -117,9 +117,10 @@ source.addTo(map);
 For convenience, `L.WMS.Source` provides a `getLayer` function that will generate a `L.WMS.Layer` already bound to the source object.  It's usually better to use this feature instead of creating `L.WMS.Layer` instances directly.
 
 ```javascript
-// Okay
-var layer1 = L.WMS.layer("http://example.com/mapserv", "layer1");
-var layer2 = L.WMS.layer("http://example.com/mapserv", "layer2");
+// Okay (implicit source)
+var options = {'transparent': true};
+var layer1 = L.WMS.layer("http://example.com/mapserv", "layer1", options);
+var layer2 = L.WMS.layer("http://example.com/mapserv", "layer2", options);
 // layer1._source === layer2._source
 var control = L.control.layers({}, {
     'Layer 1': layer1,
@@ -128,8 +129,9 @@ var control = L.control.layers({}, {
 control.addTo(map);
 ```
 ```javascript
-// Recommended
-var source = L.WMS.source("http://example.com/mapserv");
+// Recommended (explicit source)
+var options = {'transparent': true};
+var source = L.WMS.source("http://example.com/mapserv", options);
 var layer1 = source.getLayer('layer1');
 var layer2 = source.getLayer('layer2');
 var control = L.control.layers({}, {

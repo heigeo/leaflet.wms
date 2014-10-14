@@ -140,7 +140,7 @@ L.WMS.tileLayer = L.tileLayer.wms;
  * Portions of L.WMS.Overlay are directly extracted from L.TileLayer.WMS.
  * See Leaflet license.
  */
-L.WMS.Overlay = L.LayerGroup.extend({
+L.WMS.Overlay = L.Layer.extend({
     'defaultWmsParams': {
         'service': 'WMS',
         'request': 'GetMap',

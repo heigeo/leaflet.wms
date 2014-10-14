@@ -29,7 +29,7 @@ function createMap(div, tiled) {
             "transparent": "true",
             "attribution": "<a href='http://nationalatlas.gov'>NationalAtlas.gov</a>",
             "tiled": tiled
-        
+        }        
     );
 
     var layers = {

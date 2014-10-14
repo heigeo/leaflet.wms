@@ -32,6 +32,8 @@ for leaflet.
  * Layer identify (coming soon)
  * Pull requests welcome!
 
+> **Note:** this plugin does not work with Leaflet 0.7.3 or earlier.  You will need the latest `master` version of Leaflet (0.8-dev), which will be 1.0 when it comes out (soon).
+
 ## Usage
 
 ```javascript

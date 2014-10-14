@@ -33,7 +33,8 @@ L.WMS = L.wms = {};
  */
 L.WMS.Source = L.Layer.extend({
     'options': {
-        'tiled': false
+        'tiled': false,
+        'identify': true
     },
 
     'initialize': function(url, options) {
@@ -52,8 +53,16 @@ L.WMS.Source = L.Layer.extend({
     },
 
     'onAdd': function(map) {
-        /* jshint unused: false */
+        if (this.options.identify) {
+            map.on('click', this.identify, this);
+        }
         this.refreshOverlay();
+    },
+
+    'onRemove': function(map) {
+        if (this.options.identify) {
+            map.off('click', this.identify);
+        }
     },
 
     'getLayer': function(name) {
@@ -81,6 +90,91 @@ L.WMS.Source = L.Layer.extend({
             this._overlay.setParams({'layers': subLayers});
             this._overlay.addTo(this._map);
         }
+    },
+
+    'identify': function(evt) {
+        // Identify map features in response to map clicks. To customize this
+        // behavior, create a class extending L.WMS.Source and override one or
+        // more of the following hook functions.
+
+        var layers = this.getIdentifyLayers();
+        if (!layers.length) {
+            return;
+        }
+        if (this.options.tiled) {
+            // We don't support identify for tiled layers (yet)
+            return;
+        }
+        this.getFeatureInfo(
+            evt.containerPoint, evt.latlng, layers,
+            this.showFeatureInfo
+        );
+    },
+
+    'getFeatureInfo': function(point, latlng, layers, callback) {
+        // Request WMS GetFeatureInfo and call callback with results
+        // (split from identify() to faciliate use outside of map events)
+        var params = this.getFeatureInfoParams(point, layers),
+            url = this._url + L.Util.getParamString(params, this._url);
+
+        this.showWaiting();
+        ajax.call(this, url, done);
+
+        function done(result) {
+            this.hideWaiting();
+            var text = this.parseFeatureInfo(result, url);
+            callback.call(this, latlng, text);
+        }
+    },
+
+    'getIdentifyLayers': function() {
+        // Hook to determine which layers to identify
+        if (this.options.identifyLayers)
+            return this.options.identifyLayers;
+        return Object.keys(this._subLayers);
+     },
+
+    'getFeatureInfoParams': function(point, layers) {
+        // Hook to generate parameters for WMS service GetFeatureInfo request
+        var infoParams = {
+            'request': 'GetFeatureInfo',
+            'query_layers': layers.join(','),
+            'X': point.x,
+            'Y': point.y
+        };
+        return L.extend({}, this._overlay.wmsParams, infoParams);
+    },
+
+    'parseFeatureInfo': function(result, url) {
+        // Hook to handle parsing AJAX response
+        if (result == "error") {
+            // AJAX failed, possibly due to CORS issues.
+            // Try loading content in <iframe>.
+            result = "<iframe src='" + url + "' style='border:none'>";
+        }
+        return result;
+    },
+
+    'showFeatureInfo': function(latlng, info) {
+        // Hook to handle displaying parsed AJAX response to the user
+        if (!this._map) {
+            return;
+        }
+        this._map.openPopup(info, latlng);
+    },
+
+    'showWaiting': function() {
+        // Hook to customize AJAX wait animation
+        if (!this._map)
+            return;
+        this._map._container.style.cursor = "progress";
+    },
+
+    'hideWaiting': function() {
+        // Hook to remove AJAX wait animation
+        if (!this._map)
+            return;
+        this._map._container.style.cursor = "default";
     }
 });
 
@@ -159,6 +253,7 @@ L.WMS.Overlay = L.Layer.extend({
             'crs': true,
             'uppercase': true,
             'tiled': true,
+            'identify': true,
             'attribution': true
         };
         var params = {};
@@ -269,6 +364,25 @@ L.WMS.Overlay = L.Layer.extend({
 L.WMS.overlay = function(url, options) {
     return new L.WMS.Overlay(url, options);
 };
+
+// Simple AJAX helper (since we can't assume jQuery etc. are present)
+function ajax(url, callback) {
+    var context = this,
+        request = new XMLHttpRequest();
+    request.onreadystatechange = change;
+    request.open('GET', url);
+    request.send();
+
+    function change() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                callback.call(context, request.responseText);
+            } else {
+                callback.call(context, "error");
+            }
+        }
+    }
+}
 
 return L.WMS;
 

@@ -29,7 +29,7 @@ for leaflet.
 
  * "Single-tile" auto-updating WMS overlay
  * Use single server-composited image for layers coming from the same source
- * Layer identify (coming soon)
+ * Layer identify via `GetFeatureInfo`
  * Pull requests welcome!
 
 > **Note:** this plugin does not work with Leaflet 0.7.3 or earlier.  You will need the latest `master` version of Leaflet (0.8-dev), which will be 1.0 when it comes out (soon).
@@ -143,6 +143,29 @@ var control = L.control.layers({}, {
 })
 control.addTo(map);
 ```
+
+### Identify (GetFeatureInfo)
+
+`L.WMS.Source` includes an `identify()` feature that can call the WMS GetFeatureInfo service to query a map layer and return information about the underlying features.  To disable this functionality, set `options.identify` to `false` when initializing the source.  The default functionality places a popup on the map at the point where the user clicked.  To customize the functionality, create a class extending `L.WMS.Source` and override one or more of the provided hooks.
+
+```javascript
+var MySource = L.WMS.Source.extend({
+    'showFeatureInfo': function(latlng, info) {
+        $('.output').html(info);
+    }
+});
+```
+
+The following hooks are available:
+
+Name | Description
+-----|-------------
+`getIdentifyLayers()` | Determine which layers to identify (default is all visible layers)
+`getFeatureInfoParameters(point, layers)` | Generate parameters for WMS `GetFeatureInfo` request
+`parseFeatureInfo(result, url)` | Parse the AJAX response into HTML
+`showFeatureInfo(latlng, info)` | Display parsed AJAX response to the user (e.g in a popup)
+`showWaiting()` | Start AJAX wait animation (spinner, etc.)
+`hideWaiting()` | Stop AJAX wait animation
 
 [Leaflet]: http://leafletjs.com
 [esri-leaflet]: https://github.com/Esri/esri-leaflet

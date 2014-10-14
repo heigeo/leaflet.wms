@@ -161,7 +161,7 @@ The following hooks are available:
 Name | Description
 -----|-------------
 `getIdentifyLayers()` | Determine which layers to identify (default is all visible layers)
-`getFeatureInfoParameters(point, layers)` | Generate parameters for WMS `GetFeatureInfo` request
+`getFeatureInfoParams(point, layers)` | Generate parameters for WMS `GetFeatureInfo` request
 `parseFeatureInfo(result, url)` | Parse the AJAX response into HTML
 `showFeatureInfo(latlng, info)` | Display parsed AJAX response to the user (e.g in a popup)
 `showWaiting()` | Start AJAX wait animation (spinner, etc.)

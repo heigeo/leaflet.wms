@@ -70,7 +70,7 @@ var source = wms.source("http://example.com/mapserv");
 
 ## API
 
-leaflet.wms provides four layer classes (and shortcut lowercase functions) that facilitate working with WMS layers.  To get the most out of leaflet.wms, it's generally best to just use the `L.WMS.Source` virtual layer.
+leaflet.wms provides four layer classes (and shortcut lowercase functions) that facilitate working with WMS layers.  To get the most out of leaflet.wms, it's generally best to just use the [L.WMS.Source] virtual layer, which creates other layers automatically.
 
 ### L.WMS.TileLayer
 
@@ -79,7 +79,8 @@ This class is (currently) identical to [L.TileLayer.WMS].  It provides a simple 
 ```javascript
 var tiles = L.WMS.tileLayer("http://example.com/mapserv", {
     'tileSize': 512,
-    'layers': 'layer1,layer2'
+    'layers': 'layer1,layer2',
+    'transparent': true
 });
 tiles.addTo(map);
 ```
@@ -92,7 +93,8 @@ The API is nearly identical to `L.WMS.TileLayer`, except that the tile options d
 
 ```javascript
 var overlay = L.WMS.overlay("http://example.com/mapserv", {
-    'layers': 'layer1,layer2'
+    'layers': 'layer1,layer2',
+    'transparent': true
 });
 overlay.addTo(map);
 ```
@@ -106,7 +108,8 @@ Like the other WMS layers, `L.WMS.Source` takes a URL and an options object as i
 `L.WMS.Source` provides two functions for toggling on and off individual WMS layers (`addSubLayer` and `removeSubLayer`, respectively).  That said, it is usually more convenient to use `L.WMS.Layer` instances (described next).
 
 ```javascript
-var source = L.WMS.source("http://example.com/mapserv");
+var options = {'transparent': true};
+var source = L.WMS.source("http://example.com/mapserv", options);
 source.addSubLayer('layer1');
 source.addTo(map);
 ```
@@ -145,3 +148,4 @@ control.addTo(map);
 [esri-leaflet]: https://github.com/Esri/esri-leaflet
 [L.TileLayer.WMS]: http://leafletjs.com/reference.html#tilelayer-wms
 [L.ImageOverlay]: http://leafletjs.com/reference.html#imageoverlay
+[L.WMS.Source]: https://github.com/heigeo/leaflet.wms#lwmssource

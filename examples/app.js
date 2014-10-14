@@ -28,9 +28,8 @@ function createMap(div, tiled) {
             "format": "image/png",
             "transparent": "true",
             "attribution": "<a href='http://nationalatlas.gov'>NationalAtlas.gov</a>",
-            "tiled": tiled,
-            "tileSize": 512 // only applies when tiled=true
-        }
+            "tiled": tiled
+        
     );
 
     var layers = {

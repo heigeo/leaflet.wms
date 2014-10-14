@@ -22,7 +22,7 @@
 }(function (L) {
 
 // Namespace
-L.WMS = {};
+L.WMS = L.wms = {};
 
 /*
  * L.WMS.Source

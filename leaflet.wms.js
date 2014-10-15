@@ -101,10 +101,6 @@ L.WMS.Source = L.Layer.extend({
         if (!layers.length) {
             return;
         }
-        if (this.options.tiled) {
-            // We don't support identify for tiled layers (yet)
-            return;
-        }
         this.getFeatureInfo(
             evt.containerPoint, evt.latlng, layers,
             this.showFeatureInfo
@@ -136,13 +132,24 @@ L.WMS.Source = L.Layer.extend({
 
     'getFeatureInfoParams': function(point, layers) {
         // Hook to generate parameters for WMS service GetFeatureInfo request
+        var wmsParams, overlay;
+        if (this.options.tiled) {
+            // Create overlay instance to leverage updateWmsParams
+            overlay = L.WMS.overlay(this._url, this.options);
+            overlay.updateWmsParams(this._map);
+            wmsParams = overlay.wmsParams;
+            wmsParams.layers = layers.join(',');
+        } else {
+            // Use existing overlay
+            wmsParams = this._overlay.wmsParams;
+        }
         var infoParams = {
             'request': 'GetFeatureInfo',
             'query_layers': layers.join(','),
             'X': point.x,
             'Y': point.y
         };
-        return L.extend({}, this._overlay.wmsParams, infoParams);
+        return L.extend({}, wmsParams, infoParams);
     },
 
     'parseFeatureInfo': function(result, url) {
@@ -302,9 +309,8 @@ L.WMS.Overlay = L.Layer.extend({
             return;
         }
         // Determine image URL and whether it has changed since last update
-        var bounds = this._map.getBounds();
-        var size = this._map.getSize();
-        var url = this.getImageUrl(bounds, size);
+        this.updateWmsParams();
+        var url = this.getImageUrl();
         if (this._currentUrl == url) {
             return;
         }
@@ -312,6 +318,7 @@ L.WMS.Overlay = L.Layer.extend({
 
         // Keep current image overlay in place until new one loads
         // (inspired by esri.leaflet)
+        var bounds = this._map.getBounds();
         var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
         overlay.addTo(this._map);
         overlay.once('load', _swap, this);
@@ -331,11 +338,15 @@ L.WMS.Overlay = L.Layer.extend({
     },
 
     // See L.TileLayer.WMS: onAdd() & getTileUrl()
-    'getImageUrl': function(bounds, size) {
+    'updateWmsParams': function(map) {
+        if (!map) {
+            map = this._map;
+        }
         // Compute WMS options
+        var bounds = map.getBounds();
+        var size = map.getSize();
         var wmsVersion = parseFloat(this.wmsParams.version);
-        var crs = this.options.crs || this._map.options.crs;
-        var uppercase = this.options.uppercase || false;
+        var crs = this.options.crs || map.options.crs;
         var projectionKey = wmsVersion >= 1.3 ? 'crs' : 'srs';
         var nw = crs.project(bounds.getNorthWest());
         var se = crs.project(bounds.getSouthEast());
@@ -352,11 +363,12 @@ L.WMS.Overlay = L.Layer.extend({
             [nw.x, se.y, se.x, nw.y]
         ).join(',');
 
-        var pstr = L.Util.getParamString(
-            L.extend(this.wmsParams, params),
-            this._url, uppercase
-        );
+        L.extend(this.wmsParams, params);
+    },
 
+    'getImageUrl': function() {
+        var uppercase = this.options.uppercase || false;
+        var pstr = L.Util.getParamString(this.wmsParams, this._url, uppercase);
         return this._url + pstr;
     }
 });

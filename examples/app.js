@@ -9,7 +9,7 @@ define(['leaflet', 'leaflet.wms'],
 function(L) {
 
 var overlayMap = createMap('overlay-map', false);
-var tiledMap = createMap('tiled-map', true);
+// var tiledMap = createMap('tiled-map', true);
 
 function createMap(div, tiled) {
     // Map configuration
@@ -33,11 +33,14 @@ function createMap(div, tiled) {
     );
 
     var layers = {
-        'Airports': source.getLayer("airports"),
-        'Lakes & Rivers': source.getLayer("lakesrivers"),
         'Time Zones': source.getLayer("timezones"),
+        'Lakes & Rivers': source.getLayer("lakesrivers"),
+        'Airports': source.getLayer("airports"),
         'State Capitals': source.getLayer("statecap")
     };
+    for (var name in layers) {
+        layers[name].addTo(map);
+    }
 
     // Create layer control
     L.control.layers(basemaps, layers).addTo(map);
@@ -67,7 +70,7 @@ function blank() {
 return {
     'maps': {
         'overlay': overlayMap,
-        'tiled': tiledMap
+//        'tiled': tiledMap
     }
 };
 

@@ -52,16 +52,15 @@ L.WMS.Source = L.Layer.extend({
         }
     },
 
-    'onAdd': function(map) {
-        if (this.options.identify) {
-            map.on('click', this.identify, this);
-        }
+    'onAdd': function() {
         this.refreshOverlay();
     },
 
-    'onRemove': function(map) {
+    'getEvents': function() {
         if (this.options.identify) {
-            map.off('click', this.identify);
+            return {'click': this.identify};
+        } else {
+            return {};
         }
     },
 
@@ -283,8 +282,7 @@ L.WMS.Overlay = L.Layer.extend({
         return this.options.attribution;
     },
 
-    'onAdd': function(map) {
-        this._map = map;
+    'onAdd': function() {
         this.update();
     },
 

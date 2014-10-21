@@ -25,6 +25,24 @@
 // Module object
 var wms = {};
 
+// Hacky backport of L.Layer for 0.7.3
+if (!L.Layer) {
+    L.Layer = L.LayerGroup.extend({
+        'onAdd': function(map) {
+            this._map = map;
+            if (map && this.getEvents) {
+                var events = this.getEvents();
+                for (var evt in events) {
+                    map.on(evt, events[evt], this);
+                }
+            }
+        },
+        'onRemove': function() {
+            delete this._map;
+        }
+    });
+}
+
 /*
  * wms.Source
  * The Source object manages a single WMS connection.  Multiple "layers" can be
@@ -53,7 +71,8 @@ wms.Source = L.Layer.extend({
         }
     },
 
-    'onAdd': function() {
+    'onAdd': function(map) {
+        L.Layer.prototype.onAdd.call(this, map);
         this.refreshOverlay();
     },
 
@@ -85,7 +104,7 @@ wms.Source = L.Layer.extend({
             return;
         }
         if (!subLayers) {
-            this._overlay.remove();
+            this._map.removeLayer(this._overlay);
         } else {
             this._overlay.setParams({'layers': subLayers});
             this._overlay.addTo(this._map);
@@ -207,7 +226,8 @@ wms.Layer = L.Layer.extend({
         this._source = source;
         this._name = layerName;
     },
-    'onAdd': function() {
+    'onAdd': function(map) {
+        L.Layer.prototype.onAdd.call(this, map);
         if (!this._source._map)
             this._source.addTo(this._map);
         this._source.addSubLayer(this._name);
@@ -284,7 +304,8 @@ wms.Overlay = L.Layer.extend({
         return this.options.attribution;
     },
 
-    'onAdd': function() {
+    'onAdd': function(map) {
+        L.Layer.prototype.onAdd.call(this, map);
         this.update();
     },
 
@@ -296,6 +317,7 @@ wms.Overlay = L.Layer.extend({
         if (this._currentUrl) {
             delete this._currentUrl;
         }
+        L.Layer.prototype.onRemove.call(this, map);
     },
 
     'getEvents': function() {

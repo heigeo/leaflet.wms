@@ -248,7 +248,8 @@ L.WMS.Overlay = L.Layer.extend({
         'layers': '',
         'styles': '',
         'format': 'image/jpeg',
-        'transparent': false
+        'transparent': false,
+        'opacity': 1
     },
 
     'initialize': function(url, options) {
@@ -331,7 +332,7 @@ L.WMS.Overlay = L.Layer.extend({
                 this._map.removeLayer(this._currentOverlay);
             }
             this._currentOverlay = overlay;
-            overlay.setOpacity(this.wmsParams.opacity ? this.wmsParams.opacity : 1);
+            overlay.setOpacity(this.options.opacity ? this.options.opacity : 1);
         }
     },
 

@@ -248,8 +248,7 @@ L.WMS.Overlay = L.Layer.extend({
         'layers': '',
         'styles': '',
         'format': 'image/jpeg',
-        'transparent': false,
-        'opacity': 1
+        'transparent': false
     },
 
     'initialize': function(url, options) {
@@ -261,6 +260,7 @@ L.WMS.Overlay = L.Layer.extend({
             'uppercase': true,
             'tiled': true,
             'identify': true,
+            'opacity': true,
             'attribution': true
         };
         var params = {};
@@ -332,7 +332,9 @@ L.WMS.Overlay = L.Layer.extend({
                 this._map.removeLayer(this._currentOverlay);
             }
             this._currentOverlay = overlay;
-            overlay.setOpacity(this.options.opacity ? this.options.opacity : 1);
+            overlay.setOpacity(
+                this.options.opacity ? this.options.opacity : 1
+            );
         }
     },
 

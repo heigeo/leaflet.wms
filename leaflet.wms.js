@@ -331,7 +331,7 @@ L.WMS.Overlay = L.Layer.extend({
                 this._map.removeLayer(this._currentOverlay);
             }
             this._currentOverlay = overlay;
-            overlay.setOpacity(1);
+            overlay.setOpacity(this.wmsParams.opacity ? this.wmsParams.opacity : 1);
         }
     },
 

@@ -17,21 +17,22 @@
         // Browser globals
         if (typeof this.L === 'undefined')
             throw 'Leaflet must be loaded first!';
-        factory(this.L);
+        // Namespace
+        this.L.WMS = this.L.wms = factory(this.L);
     }
 }(function (L) {
 
-// Namespace
-L.WMS = L.wms = {};
+// Module object
+var wms = {};
 
 /*
- * L.WMS.Source
+ * wms.Source
  * The Source object manages a single WMS connection.  Multiple "layers" can be
  * created with the getLayer function, but a single request will be sent for
  * each image update.  Can be used in non-tiled "overlay" mode (default), or
- * tiled mode, via an internal L.WMS.Overlay or L.WMS.TileLayer, respectively.
+ * tiled mode, via an internal wms.Overlay or wms.TileLayer, respectively.
  */
-L.WMS.Source = L.Layer.extend({
+wms.Source = L.Layer.extend({
     'options': {
         'tiled': false,
         'identify': true
@@ -46,9 +47,9 @@ L.WMS.Source = L.Layer.extend({
 
     'createOverlay': function(url, options) {
         if (options.tiled) {
-            return L.WMS.tileLayer(url, options);
+            return wms.tileLayer(url, options);
         } else {
-            return L.WMS.overlay(url, options);
+            return wms.overlay(url, options);
         }
     },
 
@@ -65,7 +66,7 @@ L.WMS.Source = L.Layer.extend({
     },
 
     'getLayer': function(name) {
-        return L.WMS.layer(this, name);
+        return wms.layer(this, name);
     },
 
     'addSubLayer': function(name) {
@@ -93,7 +94,7 @@ L.WMS.Source = L.Layer.extend({
 
     'identify': function(evt) {
         // Identify map features in response to map clicks. To customize this
-        // behavior, create a class extending L.WMS.Source and override one or
+        // behavior, create a class extending wms.Source and override one or
         // more of the following hook functions.
 
         var layers = this.getIdentifyLayers();
@@ -134,7 +135,7 @@ L.WMS.Source = L.Layer.extend({
         var wmsParams, overlay;
         if (this.options.tiled) {
             // Create overlay instance to leverage updateWmsParams
-            overlay = L.WMS.overlay(this._url, this.options);
+            overlay = wms.overlay(this._url, this.options);
             overlay.updateWmsParams(this._map);
             wmsParams = overlay.wmsParams;
             wmsParams.layers = layers.join(',');
@@ -184,24 +185,24 @@ L.WMS.Source = L.Layer.extend({
     }
 });
 
-L.WMS.source = function(url, options) {
-    return new L.WMS.Source(url, options);
+wms.source = function(url, options) {
+    return new wms.Source(url, options);
 };
 
 /*
- * L.WMS.Layer
+ * Layer
  * Leaflet "layer" with all actual rendering handled via an underlying Source
  * object.  Can be called directly with a URL to automatically create or reuse
  * an existing Source.  Note that the auto-source feature doesn't work well in
  * multi-map environments; so for best results, create a Source first and use
- * getLayer() to retrieve L.WMS.Layer instances.
+ * getLayer() to retrieve wms.Layer instances.
  */
 
-L.WMS.Layer = L.Layer.extend({
+wms.Layer = L.Layer.extend({
     'initialize': function(source, layerName, options) {
         if (!source.addSubLayer) {
             // Assume source is a URL
-            source = L.WMS.getSourceForUrl(source, options);
+            source = wms.getSourceForUrl(source, options);
         }
         this._source = source;
         this._name = layerName;
@@ -216,31 +217,31 @@ L.WMS.Layer = L.Layer.extend({
     }
 });
 
-L.WMS.layer = function(source, options) {
-    return new L.WMS.Layer(source, options);
+wms.layer = function(source, options) {
+    return new wms.Layer(source, options);
 };
 
-// Cache of sources for use with L.WMS.Layer auto-source option
+// Cache of sources for use with wms.Layer auto-source option
 var sources = {};
-L.WMS.getSourceForUrl = function(url, options) {
+wms.getSourceForUrl = function(url, options) {
     if (!sources[url]) {
-        sources[url] = L.WMS.source(url, options);
+        sources[url] = wms.source(url, options);
     }
     return sources[url];
 };
 
 
 // Copy tiled WMS layer from leaflet core, in case we need to subclass it later
-L.WMS.TileLayer = L.TileLayer.WMS;
-L.WMS.tileLayer = L.tileLayer.wms;
+wms.TileLayer = L.TileLayer.WMS;
+wms.tileLayer = L.tileLayer.wms;
 
 /*
- * L.WMS.Overlay:
+ * wms.Overlay:
  * "Single Tile" WMS image overlay that updates with map changes.
- * Portions of L.WMS.Overlay are directly extracted from L.TileLayer.WMS.
+ * Portions of wms.Overlay are directly extracted from L.TileLayer.WMS.
  * See Leaflet license.
  */
-L.WMS.Overlay = L.Layer.extend({
+wms.Overlay = L.Layer.extend({
     'defaultWmsParams': {
         'service': 'WMS',
         'request': 'GetMap',
@@ -374,8 +375,8 @@ L.WMS.Overlay = L.Layer.extend({
     }
 });
 
-L.WMS.overlay = function(url, options) {
-    return new L.WMS.Overlay(url, options);
+wms.overlay = function(url, options) {
+    return new wms.Overlay(url, options);
 };
 
 // Simple AJAX helper (since we can't assume jQuery etc. are present)
@@ -397,6 +398,6 @@ function ajax(url, callback) {
     }
 }
 
-return L.WMS;
+return wms;
 
 }));

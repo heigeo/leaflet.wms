@@ -6,7 +6,7 @@ requirejs.config({
 });
 
 define(['leaflet', 'leaflet.wms'],
-function(L) {
+function(L, wms) {
 
 var overlayMap = createMap('overlay-map', false);
 // var tiledMap = createMap('tiled-map', true);
@@ -22,7 +22,7 @@ function createMap(div, tiled) {
     };
 
     // Add WMS source/layers
-    var source = L.WMS.source(
+    var source = wms.source(
         "http://webservices.nationalatlas.gov/wms",
         {
             "format": "image/png",

@@ -39,17 +39,24 @@ wms.Source = L.Layer.extend({
     },
 
     'initialize': function(url, options) {
+        L.setOptions(this, options);
         this._url = url;
         this._subLayers = {};
-        options = L.setOptions(this, options);
-        this._overlay = this.createOverlay(url, options);
+        this._overlay = this.createOverlay(this.options.tiled);
     },
 
-    'createOverlay': function(url, options) {
-        if (options.tiled) {
-            return wms.tileLayer(url, options);
+    'createOverlay': function(tiled) {
+        // Create overlay with all options other than tiled & identify
+        var overlayOptions = {};
+        for (var opt in this.options) {
+            if (opt != 'tiled' && opt != 'identify') {
+                overlayOptions[opt] = this.options[opt];
+            }
+        }
+        if (tiled) {
+            return wms.tileLayer(this._url, overlayOptions);
         } else {
-            return wms.overlay(url, options);
+            return wms.overlay(this._url, overlayOptions);
         }
     },
 
@@ -135,7 +142,7 @@ wms.Source = L.Layer.extend({
         var wmsParams, overlay;
         if (this.options.tiled) {
             // Create overlay instance to leverage updateWmsParams
-            overlay = wms.overlay(this._url, this.options);
+            overlay = this.createOverlay();
             overlay.updateWmsParams(this._map);
             wmsParams = overlay.wmsParams;
             wmsParams.layers = layers.join(',');
@@ -252,21 +259,20 @@ wms.Overlay = L.Layer.extend({
         'transparent': false
     },
 
+    'options': {
+        'crs': null,
+        'uppercase': false,
+        'attribution': '',
+        'opacity': 1
+    },
+
     'initialize': function(url, options) {
         this._url = url;
 
         // Move WMS parameters to params object
-        var optNames = {
-            'crs': true,
-            'uppercase': true,
-            'tiled': true,
-            'identify': true,
-            'opacity': true,
-            'attribution': true
-        };
         var params = {};
         for (var opt in options) {
-             if (options.hasOwnProperty(opt) && !optNames[opt]) {
+             if (!(opt in this.options)) {
                  params[opt] = options[opt];
                  delete options[opt];
              }

@@ -9,7 +9,7 @@ define(['leaflet', 'leaflet.wms'],
 function(L, wms) {
 
 var overlayMap = createMap('overlay-map', false);
-// var tiledMap = createMap('tiled-map', true);
+var tiledMap = createMap('tiled-map', true);
 
 function createMap(div, tiled) {
     // Map configuration
@@ -70,7 +70,7 @@ function blank() {
 return {
     'maps': {
         'overlay': overlayMap,
-//        'tiled': tiledMap
+        'tiled': tiledMap
     }
 };
 

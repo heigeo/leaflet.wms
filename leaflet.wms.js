@@ -121,13 +121,17 @@ wms.Source = L.Layer.extend({
             url = this._url + L.Util.getParamString(params, this._url);
 
         this.showWaiting();
-        ajax.call(this, url, done);
+        this.ajax(url, done);
 
         function done(result) {
             this.hideWaiting();
             var text = this.parseFeatureInfo(result, url);
             callback.call(this, latlng, text);
         }
+    },
+
+    'ajax': function(url, callback) {
+        ajax.call(this, url, callback);
     },
 
     'getIdentifyLayers': function() {

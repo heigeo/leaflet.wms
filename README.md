@@ -162,6 +162,7 @@ Name | Description
 -----|-------------
 `getIdentifyLayers()` | Determine which layers to identify (default is all visible layers)
 `getFeatureInfoParams(point, layers)` | Generate parameters for WMS `GetFeatureInfo` request
+`ajax(url, callback)` | Actual AJAX call.  The default implementation is a rudimentary `XMLHttpRequest` wrapper.  Override this if you want to use jQuery or something with more robust support for older browsers.  If you override this, be sure to preserve the value of `this` when calling the callback function (e.g. `callback.call(this, result)`).
 `parseFeatureInfo(result, url)` | Parse the AJAX response into HTML
 `showFeatureInfo(latlng, info)` | Display parsed AJAX response to the user (e.g in a popup)
 `showWaiting()` | Start AJAX wait animation (spinner, etc.)

@@ -150,6 +150,14 @@ control.addTo(map);
 
 ```javascript
 var MySource = L.WMS.Source.extend({
+    'ajax': function(url, callback) {
+        $.ajax(url, {
+            'context': this,
+            'success': function(result) {
+                callback.call(this, result);
+             }
+        });
+    },
     'showFeatureInfo': function(latlng, info) {
         $('.output').html(info);
     }

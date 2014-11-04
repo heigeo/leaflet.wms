@@ -19,9 +19,10 @@ individually via `L.TileLayer.WMS` is problematic:
  * The browser can be overwhelmed when using a large tile size or displaying
    many layers at once.
 
-Various workarounds have been proposed to address these issues.  The goal of
-plugin is an attempt to bring all of these workarounds into a single WMS plugin
-for leaflet.
+Various workarounds have been proposed to address some of these issues, most notably
+in [Leaflet.NonTiledLayer](https://github.com/ptv-logistics/Leaflet.NonTiledLayer).
+The goal of this project to bring all of these concepts and more into a single,
+comprehensive WMS plugin for Leaflet.
 
 ## [Demo](http://heigeo.github.io/leaflet.wms)
 

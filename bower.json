@@ -10,7 +10,7 @@
     "wms"
   ],
   "dependencies": {
-    "leaflet": "lib/leaflet.js"
+   "leaflet": "0.8-dev"
   },
   "license": "MIT",
   "ignore": [

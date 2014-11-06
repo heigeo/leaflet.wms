@@ -9,9 +9,9 @@
     "leaflet",
     "wms"
   ],
-  "dependencies": [
+  "dependencies": {
     "leaflet": "lib/leaflet.js"
-  ],
+  },
   "license": "MIT",
   "ignore": [
     "**/.*",

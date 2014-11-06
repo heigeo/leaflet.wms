@@ -10,7 +10,7 @@
     "leaflet.wms.js"
   ],
   "dependencies": {
-    "leaflet": "0.7.x"
+    "leaflet": "0.8.x"
   },
   "ignore": [
     "**/.*",

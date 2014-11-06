@@ -1,0 +1,19 @@
+{
+  "author": "https://github.com/heigeo/leaflet.wms",
+  "name": "leaflet.wms",
+  "description": "",
+  "version": "1.0.0",
+  "homepage": "https://github.com/heigeo/leaflet.wms",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alrocar/leaflet.wms"
+  },
+  "keywords": [
+    "wms",
+    "leaflet",
+    "javascript"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "main": "leaflet.wms.js"
+}

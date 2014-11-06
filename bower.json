@@ -10,7 +10,7 @@
     "wms"
   ],
   "dependencies": {
-   "leaflet": "0.8-dev"
+   "leaflet": "#master"
   },
   "license": "MIT",
   "ignore": [

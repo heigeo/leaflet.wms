@@ -1,0 +1,22 @@
+{
+  "name": "leaflet.wms",
+  "description": "A Leaflet plugin for working with Web Map services, providing: single-tile/untiled/nontiled layers, shared WMS sources, and GetFeatureInfo-powered identify",
+  "keywords": [
+    "wms",
+    "javascript",
+    "leaflet"
+  ],
+  "main": [
+    "leaflet.wms.js"
+  ],
+  "dependencies": {
+    "leaflet": "0.7.x"
+  },
+  "ignore": [
+    "**/.*",
+    "examples",
+    "*.md",
+    "package.json",
+    "bower.json"
+  ]
+}

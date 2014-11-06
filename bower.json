@@ -9,9 +9,6 @@
   "main": [
     "leaflet.wms.js"
   ],
-  "dependencies": {
-    "leaflet": "0.8.x"
-  },
   "ignore": [
     "**/.*",
     "examples",

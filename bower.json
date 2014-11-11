@@ -1,7 +1,7 @@
 {
   "name": "leaflet.wms",
   "main": "leaflet.wms.js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "homepage": "http://heigeo.github.io/leaflet.wms/",
   "description": "A Leaflet plugin for working with Web Map services, providing: single-tile/untiled/nontiled layers, shared WMS sources, and GetFeatureInfo-powered identify",
   "keywords": [

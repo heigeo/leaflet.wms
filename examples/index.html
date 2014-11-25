@@ -26,9 +26,17 @@
       
     <h3>Overlay ("Single-Tile"/Untiled Mode)</h3>
     <p>Click the map to get information about the underlying data.</p>
+    <form>
+      <label for="range-overlay-map">Opacity</label>
+      <input id="range-overlay-map" type="range" min=0 max=1 step=0.1 value=1>
+    </form>
     <div id="overlay-map"></div>
     <h3>Tiled Layer</h3>
     <p>Click the map to get information about the underlying data.</p>
+    <form>
+      <label for="range-tiled-map">Opacity</label>
+      <input id="range-tiled-map" type="range" min=0 max=1 step=0.1 value=1>
+    </form>
     <div id="tiled-map"></div>
   </body>
 </html>

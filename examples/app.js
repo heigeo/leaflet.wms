@@ -45,6 +45,11 @@ function createMap(div, tiled) {
     // Create layer control
     L.control.layers(basemaps, layers).addTo(map);
 
+    // Opacity slider
+    var slider = L.DomUtil.get('range-' + div);
+    L.DomEvent.addListener(slider, 'change', function() {
+        source.setOpacity(this.value);
+    });
     return map;
 }
 

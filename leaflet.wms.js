@@ -277,7 +277,9 @@ wms.Overlay = L.Layer.extend({
         'crs': null,
         'uppercase': false,
         'attribution': '',
-        'opacity': 1
+        'opacity': 1,
+		'minZoom':0,
+		'maxZoom':18
     },
 
     'initialize': function(url, options) {
@@ -357,6 +359,11 @@ wms.Overlay = L.Layer.extend({
                 this.options.opacity ? this.options.opacity : 1
             );
         }
+		if((this._map.getZoom() < this.options.minZoom) ||
+			(this._map.getZoom()>this.options.maxZoom)){
+			this._map.removeLayer(overlay);
+		}
+		
     },
 
     'setOpacity': function(opacity) {

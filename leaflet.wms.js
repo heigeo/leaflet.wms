@@ -371,6 +371,12 @@ wms.Overlay = L.Layer.extend({
             overlay.setOpacity(
                 this.options.opacity ? this.options.opacity : 1
             );
+            if (this.options.bringToBack) {
+                overlay.bringToBack();
+            }
+            if (this.options.bringToFront) {
+                overlay.bringToFront();
+            }
         }
         if ((this._map.getZoom() < this.options.minZoom) ||
             (this._map.getZoom() > this.options.maxZoom)){
@@ -383,6 +389,20 @@ wms.Overlay = L.Layer.extend({
          if (this._currentOverlay) {
              this._currentOverlay.setOpacity(opacity);
          }
+    },
+
+    'bringToBack': function() {
+        this.options.bringToBack = true;
+        if (this._currentOverlay) {
+            this._currentOverlay.bringToBack();
+        }
+    },
+
+    'bringToFront': function() {
+        this.options.bringToFront = false;
+        if (this._currentOverlay) {
+            this._currentOverlay.bringToFront();
+        }
     },
 
     // See L.TileLayer.WMS: onAdd() & getTileUrl()

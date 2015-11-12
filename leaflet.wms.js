@@ -78,6 +78,20 @@ wms.Source = L.Layer.extend({
              this._overlay.setOpacity(opacity);
          }
     },
+    
+    'bringToBack': function() {
+         this.options.isBack = true;
+         if (this._overlay) {
+             this._overlay.bringToBack();
+         }
+    },
+
+    'bringToFront': function() {
+         this.options.isBack = false;
+         if (this._overlay) {
+             this._overlay.bringToFront();
+         }
+    },
 
     'getLayer': function(name) {
         return wms.layer(this, name);
@@ -235,6 +249,12 @@ wms.Layer = L.Layer.extend({
     },
     'setOpacity': function(opacity) {
         this._source.setOpacity(opacity);
+    },
+    'bringToBack': function() {
+        this._source.bringToBack();
+    },
+    'bringToFront': function() {
+        this._source.bringToFront();
     }
 });
 
@@ -277,7 +297,8 @@ wms.Overlay = L.Layer.extend({
         'crs': null,
         'uppercase': false,
         'attribution': '',
-        'opacity': 1
+        'opacity': 1,
+        'isBack': false
     },
 
     'initialize': function(url, options) {
@@ -356,6 +377,12 @@ wms.Overlay = L.Layer.extend({
             overlay.setOpacity(
                 this.options.opacity ? this.options.opacity : 1
             );
+            if (this.options.isBack === true) {
+                overlay.bringToBack();
+            }
+            if (this.options.isBack === false) {
+                overlay.bringToFront();
+            }
         }
     },
 
@@ -364,6 +391,20 @@ wms.Overlay = L.Layer.extend({
          if (this._currentOverlay) {
              this._currentOverlay.setOpacity(opacity);
          }
+    },
+
+    'bringToBack': function() {
+        this.options.isBack = true;
+        if (this._currentOverlay) {
+            this._currentOverlay.bringToBack();
+        }
+    },
+
+    'bringToFront': function() {
+        this.options.isBack = false;
+        if (this._currentOverlay) {
+            this._currentOverlay.bringToFront();
+        }
     },
 
     // See L.TileLayer.WMS: onAdd() & getTileUrl()

@@ -17,30 +17,28 @@ function createMap(div, tiled) {
     map.setView([45, -93.2], 6);
 
     var basemaps = {
-        'Basemap': basemap(),
-        'Blank': blank().addTo(map)
+        'Basemap': basemap().addTo(map),
+        'Blank': blank()
     };
 
     // Add WMS source/layers
     var source = wms.source(
-        "http://webservices.nationalatlas.gov/wms",
+        "http://services.nationalmap.gov/arcgis/services/GlobalMap/GlobalMapWMS/MapServer/WMSServer",
         {
             "format": "image/png",
             "transparent": "true",
             "attribution": "<a href='http://nationalatlas.gov'>NationalAtlas.gov</a>",
+            "info_format": "text/html",
             "tiled": tiled
         }        
     );
 
     var layers = {
-        'Time Zones': source.getLayer("timezones"),
-        'Lakes & Rivers': source.getLayer("lakesrivers"),
-        'Airports': source.getLayer("airports"),
-        'State Capitals': source.getLayer("statecap")
+        'Water Courses': source.getLayer("18"),
+        'Airports': source.getLayer("14").addTo(map),
+        'Large Cities': source.getLayer("27").addTo(map),
+        'Medium Cities': source.getLayer("26").addTo(map)
     };
-    for (var name in layers) {
-        layers[name].addTo(map);
-    }
 
     // Create layer control
     L.control.layers(basemaps, layers).addTo(map);
@@ -54,14 +52,11 @@ function createMap(div, tiled) {
 }
 
 function basemap() {
-    // Attribution (https://gist.github.com/mourner/1804938)
-    var mqcdn = "http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png";
-    var osmAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>';
-    var mqTilesAttr = 'Tiles &copy; <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png" />';
-    return L.tileLayer(mqcdn, {
-        'subdomains': '1234',
-        'type': 'map',
-        'attribution': osmAttr + ', ' + mqTilesAttr
+    // maps.stamen.com
+    var attr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.';
+    return L.tileLayer("http://tile.stamen.com/toner-background/{z}/{x}/{y}.png", {
+        opacity: 0.1,
+        attribution: attr
     });
 }
 

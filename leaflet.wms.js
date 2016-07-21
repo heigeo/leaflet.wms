@@ -47,29 +47,32 @@ if (!('keys' in Object)) {
  */
 wms.Source = L.Layer.extend({
     'options': {
-        'tiled': false,
+        'untiled': true,
         'identify': true
     },
 
     'initialize': function(url, options) {
         L.setOptions(this, options);
+        if (this.options.tiled) {
+            this.options.untiled = false;
+        }
         this._url = url;
         this._subLayers = {};
-        this._overlay = this.createOverlay(this.options.tiled);
+        this._overlay = this.createOverlay(this.options.untiled);
     },
 
-    'createOverlay': function(tiled) {
-        // Create overlay with all options other than tiled & identify
+    'createOverlay': function(untiled) {
+        // Create overlay with all options other than untiled & identify
         var overlayOptions = {};
         for (var opt in this.options) {
-            if (opt != 'tiled' && opt != 'identify') {
+            if (opt != 'untiled' && opt != 'identify') {
                 overlayOptions[opt] = this.options[opt];
             }
         }
-        if (tiled) {
-            return wms.tileLayer(this._url, overlayOptions);
-        } else {
+        if (untiled) {
             return wms.overlay(this._url, overlayOptions);
+        } else {
+            return wms.tileLayer(this._url, overlayOptions);
         }
     },
 
@@ -178,15 +181,15 @@ wms.Source = L.Layer.extend({
     'getFeatureInfoParams': function(point, layers) {
         // Hook to generate parameters for WMS service GetFeatureInfo request
         var wmsParams, overlay;
-        if (this.options.tiled) {
+        if (this.options.untiled) {
+            // Use existing overlay
+            wmsParams = this._overlay.wmsParams;
+        } else {
             // Create overlay instance to leverage updateWmsParams
             overlay = this.createOverlay();
             overlay.updateWmsParams(this._map);
             wmsParams = overlay.wmsParams;
             wmsParams.layers = layers.join(',');
-        } else {
-            // Use existing overlay
-            wmsParams = this._overlay.wmsParams;
         }
         var infoParams = {
             'request': 'GetFeatureInfo',

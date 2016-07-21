@@ -25,6 +25,19 @@
 // Module object
 var wms = {};
 
+// Quick shim for Object.keys()
+if (!('keys' in Object)) {
+    Object.keys = function(obj) {
+        var result = [];
+        for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                result.push(i);
+            }
+        }
+        return result;
+    };
+}
+
 /*
  * wms.Source
  * The Source object manages a single WMS connection.  Multiple "layers" can be

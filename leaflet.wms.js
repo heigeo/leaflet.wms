@@ -186,7 +186,7 @@ wms.Source = L.Layer.extend({
             wmsParams = this._overlay.wmsParams;
         } else {
             // Create overlay instance to leverage updateWmsParams
-            overlay = this.createOverlay();
+            overlay = this.createOverlay(true);
             overlay.updateWmsParams(this._map);
             wmsParams = overlay.wmsParams;
             wmsParams.layers = layers.join(',');

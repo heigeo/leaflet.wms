@@ -248,6 +248,7 @@ wms.source = function(url, options) {
 
 wms.Layer = L.Layer.extend({
     'initialize': function(source, layerName, options) {
+        L.setOptions(this, options);
         if (!source.addSubLayer) {
             // Assume source is a URL
             source = wms.getSourceForUrl(source, options);

@@ -33,7 +33,7 @@ comprehensive WMS plugin for Leaflet.
  * Layer identify via `GetFeatureInfo`
  * Pull requests welcome!
 
-> **Note:** this plugin does not work with Leaflet 0.7.3 or earlier.  You will need the latest `master` version of Leaflet (0.8-dev), which will be 1.0 when it comes out (soon).
+> **Note:** this plugin officially only works with Leaflet 1.0.  There is an [unsupported patch](https://github.com/heigeo/leaflet.wms/pull/8) that works with Leaflet 0.7, though it's not kept up to date.
 
 ## Usage
 

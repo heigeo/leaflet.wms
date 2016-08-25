@@ -104,7 +104,7 @@ overlay.addTo(map);
 
 `L.WMS.Source` is a virtual Leaflet "layer" that manages multiple WMS layers coming from a single WMS source.  By using the same source for multiple layers, you can have the WMS service composite the image, and avoid overloading the client with multiple large images.  `L.WMS.Source` is a virtual layer, as it does not load the WMS image directly.  Instead, it creates an internal `L.WMS.Overlay` or `L.WMS.TileLayer` to handle the actual loading.
 
-Like the other WMS layers, `L.WMS.Source` takes a URL and an options object as initialization parameters.  The options are passed on to the underlying `Overlay` or `TileLayer`.  An additional option, `tiled`, toggles whether to use a `TileLayer`.  The default is `false`, which uses the non-tiled `Overlay`.  Unless your WMS service is optimized for tiling, the default should provide the best performance.
+Like the other WMS layers, `L.WMS.Source` takes a URL and an options object as initialization parameters.  The options are passed on to the underlying `Overlay` or `TileLayer`.  An additional option, `untiled`, toggles whether to use `Overlay` or `TileLayer`.  The default is `true`, which uses the non-tiled `Overlay`.  Unless your WMS service is optimized for tiling, the default should provide the best performance.  To use the `TileLayer`, set `untiled` to `false`.  You can also set `tiled` to `true`, which will both use the `TileLayer` backend and set `tiled=true` in the WMS request (see [#16](https://github.com/heigeo/leaflet.wms/issues/16).
 
 `L.WMS.Source` provides two functions for toggling on and off individual WMS layers (`addSubLayer` and `removeSubLayer`, respectively).  That said, it is usually more convenient to use `L.WMS.Layer` instances (described next).
 

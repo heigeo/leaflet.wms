@@ -1,0 +1,30 @@
+{
+  "author": "Houston Engineering, Inc",
+  "name": "leaflet.wms",
+  "version": "0.1.0",
+  "description": "A collection of Leaflet utilities for working with Web Mapping services.",
+  "license": "MIT",
+  "homepage": "https://github.com/heigeo/leaflet.wms",
+  "bugs": {
+    "url": "https://github.com/heigeo/leaflet.wms/issues"
+  },
+  "main": "dist/",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "build": "uglifyjs --output dist/leaflet.wms.min.js src/leaflet.wms.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heigeo/leaflet.wms.git"
+  },
+  "keywords": [
+    "javascript",
+    "leaflet",
+    "wms"
+  ],
+  "dependencies": {
+    "uglify-js": "^2.7.3"
+  }
+}

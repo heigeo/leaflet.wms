@@ -1,7 +1,7 @@
 /*!
  * leaflet.wms.js
  * A collection of Leaflet utilities for working with Web Mapping services.
- * (c) 2014, Houston Engineering, Inc.
+ * (c) 2014-2016, Houston Engineering, Inc.
  * MIT License
  */
 

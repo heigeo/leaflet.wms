@@ -23,21 +23,19 @@ function createMap(div, tiled) {
 
     // Add WMS source/layers
     var source = wms.source(
-        "http://services.nationalmap.gov/arcgis/services/GlobalMap/GlobalMapWMS/MapServer/WMSServer",
+        "http://ows.terrestris.de/osm/service",
         {
             "format": "image/png",
             "transparent": "true",
-            "attribution": "<a href='http://nationalatlas.gov'>NationalAtlas.gov</a>",
+            "attribution": "<a href='http://ows.terrestris.de/'>terrestris</a>",
             "info_format": "text/html",
             "tiled": tiled
         }        
     );
 
     var layers = {
-        'Water Courses': source.getLayer("18"),
-        'Airports': source.getLayer("14").addTo(map),
-        'Large Cities': source.getLayer("27").addTo(map),
-        'Medium Cities': source.getLayer("26").addTo(map)
+        'Topographic': source.getLayer("TOPO-WMS").addTo(map),
+        'OSM Overlay': source.getLayer("OSM-Overlay-WMS").addTo(map)
     };
 
     // Create layer control

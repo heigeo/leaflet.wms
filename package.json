@@ -22,7 +22,9 @@
   "keywords": [
     "javascript",
     "leaflet",
-    "wms"
+    "wms",
+    "gis",
+    "map"
   ],
   "dependencies": {
     "uglify-js": "^2.7.3"

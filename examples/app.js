@@ -35,8 +35,6 @@ function createMap(div, tiled) {
     );
     source.on('loading', _count.bind(null, 1));
     source.on('load', _count.bind(null, -1));
-    source.on('wms.loading', _count.bind(null, 1));
-    source.on('wms.load', _count.bind(null, -1));
     var layers = {
         'Topographic': source.getLayer("TOPO-WMS").addTo(map),
         'OSM Overlay': source.getLayer("OSM-Overlay-WMS").addTo(map)

@@ -85,12 +85,19 @@ var tiles = L.WMS.tileLayer("http://example.com/mapserv", {
 });
 tiles.addTo(map);
 ```
-
+``
 ### L.WMS.Overlay
 
 This class provides a "single-tile"/untiled/non-tiled WMS layer.   Every time the map is panned or zoomed, a new WMS image will be requested for the entire display.  To make transitions smoother, the existing image will be kept visible until the new one is loaded.  An internal [L.ImageOverlay] instance is created for this purpose. (This technique was inspired by the [esri-leaflet] plugin.)
 
-The API is nearly identical to `L.WMS.TileLayer`, except that the tile options do not apply.  
+The API is nearly identical to `L.WMS.TileLayer`, except that the tile options do not apply.
+
+#### Events
+**`wms.loading`** - fired before requesting external service;
+
+**`wms.load`** - fired after data from external service has been received;
+
+**`error`** - forwarded from internal `L.ImageOverlay` instance.
 
 ```javascript
 var overlay = L.WMS.overlay("http://example.com/mapserv", {
@@ -102,11 +109,22 @@ overlay.addTo(map);
 
 ### L.WMS.Source
 
-`L.WMS.Source` is a virtual Leaflet "layer" that manages multiple WMS layers coming from a single WMS source.  By using the same source for multiple layers, you can have the WMS service composite the image, and avoid overloading the client with multiple large images.  `L.WMS.Source` is a virtual layer, as it does not load the WMS image directly.  Instead, it creates an internal `L.WMS.Overlay` or `L.WMS.TileLayer` to handle the actual loading.
+`L.WMS.Source` is a virtual Leaflet "layer" that manages multiple WMS layers coming from a single WMS source.  
+By using the same source for multiple layers, you can have the WMS service composite the image, 
+and avoid overloading the client with multiple large images. 
+`L.WMS.Source` is a virtual layer, as it does not load the WMS image directly.  
+Instead, it creates an internal `L.WMS.Overlay` or `L.WMS.TileLayer` to handle the actual loading.
 
-Like the other WMS layers, `L.WMS.Source` takes a URL and an options object as initialization parameters.  The options are passed on to the underlying `Overlay` or `TileLayer`.  An additional option, `untiled`, toggles whether to use `Overlay` or `TileLayer`.  The default is `true`, which uses the non-tiled `Overlay`.  Unless your WMS service is optimized for tiling, the default should provide the best performance.  To use the `TileLayer`, set `untiled` to `false`.  You can also set `tiled` to `true`, which will both use the `TileLayer` backend and set `tiled=true` in the WMS request (see [#16](https://github.com/heigeo/leaflet.wms/issues/16).
+Like the other WMS layers, `L.WMS.Source` takes a URL and an options object as initialization parameters.
+The options are passed on to the underlying `Overlay` or `TileLayer`.
+An additional option, `untiled`, toggles whether to use `Overlay` or `TileLayer`.
+The default is `true`, which uses the non-tiled `Overlay`.
+Unless your WMS service is optimized for tiling, the default should provide the best performance.
+To use the `TileLayer`, set `untiled` to `false`.
+You can also set `tiled` to `true`, which will both use the `TileLayer` backend and
+set `tiled=true` in the WMS request (see [#16](https://github.com/heigeo/leaflet.wms/issues/16).
 
-`L.WMS.Source` provides two functions for toggling on and off individual WMS layers (`addSubLayer` and `removeSubLayer`, respectively).  That said, it is usually more convenient to use `L.WMS.Layer` instances (described next).
+`L.WMS.Source` forwards all `L.WMS.Overlay` events and provides two functions for toggling on and off individual WMS layers (`addSubLayer` and `removeSubLayer`, respectively).  That said, it is usually more convenient to use `L.WMS.Layer` instances (described next).
 
 ```javascript
 var options = {'transparent': true};

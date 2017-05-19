@@ -59,6 +59,9 @@ wms.Source = L.Layer.extend({
         this._url = url;
         this._subLayers = {};
         this._overlay = this.createOverlay(this.options.untiled);
+        // this._overlay.on('wms.loading', L.bind(this.fire, this, 'wms.loading'));
+        // this._overlay.on('wms.load', L.bind(this.fire, this, 'wms.load'));
+      this._overlay.addEventParent(this);
     },
 
     'createOverlay': function(untiled) {
@@ -94,7 +97,7 @@ wms.Source = L.Layer.extend({
              this._overlay.setOpacity(opacity);
          }
     },
-    
+
     'bringToBack': function() {
          this.options.isBack = true;
          if (this._overlay) {
@@ -381,8 +384,11 @@ wms.Overlay = L.Layer.extend({
         var bounds = this._map.getBounds();
         var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
         overlay.addTo(this._map);
+        this.fire('wms.loading',{layer:this},true);
+        overlay.on('error', L.bind(this.fire, this, 'error'));
         overlay.once('load', _swap, this);
         function _swap() {
+            this.fire('wms.load',{layer:this},true);
             if (!this._map) {
                 return;
             }

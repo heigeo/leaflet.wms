@@ -58,7 +58,28 @@ wms.Source = L.Layer.extend({
         }
         this._url = url;
         this._subLayers = {};
-        this._overlay = this.createOverlay(this.options.untiled);
+        var overlay = this._overlay = this.createOverlay(this.options.untiled);
+
+        //  TileLayer may emit multiple load events, we need to pass only one.
+        var counter = 0;
+        overlay.on('error', L.bind(this.fire, this, 'error'));
+        overlay.on('loading', L.bind(this.fire, this, 'loading'));
+        overlay.on('load', _onLoad, this);
+        overlay.on('tileloadstart', _count.bind(this, 1));
+        overlay.on('tileload', _count.bind(this, -1));
+        overlay.on('tileerror', _count.bind(this, -1));
+
+        function _count(delta) {
+            if ((counter += delta) <0) {
+                counter = 0;
+            }
+        }
+
+        function _onLoad(ev) {
+            if (counter === 0) {
+                this.fire('load', ev)
+            }
+        }
     },
 
     'createOverlay': function(untiled) {
@@ -94,7 +115,7 @@ wms.Source = L.Layer.extend({
              this._overlay.setOpacity(opacity);
          }
     },
-    
+
     'bringToBack': function() {
          this.options.isBack = true;
          if (this._overlay) {
@@ -381,8 +402,12 @@ wms.Overlay = L.Layer.extend({
         var bounds = this._map.getBounds();
         var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
         overlay.addTo(this._map);
+        //
+        this.fire('loading');
+        overlay.on('error', L.bind(this.fire, this, 'error'));
         overlay.once('load', _swap, this);
         function _swap() {
+            this.fire('load');
             if (!this._map) {
                 return;
             }

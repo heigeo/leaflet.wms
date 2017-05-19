@@ -1,7 +1,7 @@
 requirejs.config({
     'baseUrl': '../lib',
     'paths': {
-        'leaflet.wms': '../dist/leaflet.wms' //.js'
+        'leaflet.wms': '../src/leaflet.wms' //  For convenient debugging.
     }
 });
 
@@ -12,6 +12,7 @@ var overlayMap = createMap('overlay-map', false);
 var tiledMap = createMap('tiled-map', true);
 
 function createMap(div, tiled) {
+    var count = 0, statusEl = L.DomUtil.get(div + '-status');
     // Map configuration
     var map = L.map(div);
     map.setView([45, -93.2], 6);
@@ -30,9 +31,10 @@ function createMap(div, tiled) {
             "attribution": "<a href='http://ows.terrestris.de/'>terrestris</a>",
             "info_format": "text/html",
             "tiled": tiled
-        }        
+        }
     );
-
+    source.on('loading', _count.bind(null, 1));
+    source.on('load', _count.bind(null, -1));
     var layers = {
         'Topographic': source.getLayer("TOPO-WMS").addTo(map),
         'OSM Overlay': source.getLayer("OSM-Overlay-WMS").addTo(map)
@@ -47,6 +49,15 @@ function createMap(div, tiled) {
         source.setOpacity(this.value);
     });
     return map;
+
+    function _count(delta) {
+      if ((count += delta) > 0) {
+        statusEl.style.visibility = "visible";
+      } else {
+        statusEl.style.visibility = "hidden";
+        count = 0;   // Because repeated 'load' events initially.
+      }
+    }
 }
 
 function basemap() {
@@ -73,4 +84,3 @@ return {
 };
 
 });
-

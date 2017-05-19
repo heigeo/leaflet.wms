@@ -90,7 +90,14 @@ tiles.addTo(map);
 
 This class provides a "single-tile"/untiled/non-tiled WMS layer.   Every time the map is panned or zoomed, a new WMS image will be requested for the entire display.  To make transitions smoother, the existing image will be kept visible until the new one is loaded.  An internal [L.ImageOverlay] instance is created for this purpose. (This technique was inspired by the [esri-leaflet] plugin.)
 
-The API is nearly identical to `L.WMS.TileLayer`, except that the tile options do not apply.  
+#### Events
+**`loading`** - fired before requesting external service for map layer content;
+
+**`load`** - fired after data from external service has been received;
+
+**`error`** - forwarded from internal `L.ImageOverlay` instance.
+
+The API is nearly identical to `L.WMS.TileLayer`, except that the tile options do not apply.
 
 ```javascript
 var overlay = L.WMS.overlay("http://example.com/mapserv", {
@@ -102,9 +109,30 @@ overlay.addTo(map);
 
 ### L.WMS.Source
 
-`L.WMS.Source` is a virtual Leaflet "layer" that manages multiple WMS layers coming from a single WMS source.  By using the same source for multiple layers, you can have the WMS service composite the image, and avoid overloading the client with multiple large images.  `L.WMS.Source` is a virtual layer, as it does not load the WMS image directly.  Instead, it creates an internal `L.WMS.Overlay` or `L.WMS.TileLayer` to handle the actual loading.
+`L.WMS.Source` is a virtual Leaflet "layer" that manages multiple WMS layers coming from a single WMS source.  
+By using the same source for multiple layers, you can have the WMS service composite the image, 
+and avoid overloading the client with multiple large images. 
+`L.WMS.Source` is a virtual layer, as it does not load the WMS image directly.  
+Instead, it creates an internal `L.WMS.Overlay` or `L.WMS.TileLayer` to handle the actual loading.
 
-Like the other WMS layers, `L.WMS.Source` takes a URL and an options object as initialization parameters.  The options are passed on to the underlying `Overlay` or `TileLayer`.  An additional option, `untiled`, toggles whether to use `Overlay` or `TileLayer`.  The default is `true`, which uses the non-tiled `Overlay`.  Unless your WMS service is optimized for tiling, the default should provide the best performance.  To use the `TileLayer`, set `untiled` to `false`.  You can also set `tiled` to `true`, which will both use the `TileLayer` backend and set `tiled=true` in the WMS request (see [#16](https://github.com/heigeo/leaflet.wms/issues/16).
+Like the other WMS layers, `L.WMS.Source` takes a URL and an options object as initialization parameters.
+The options are passed on to the underlying `Overlay` or `TileLayer`.
+An additional option, `untiled`, toggles whether to use `Overlay` or `TileLayer`.
+The default is `true`, which uses the non-tiled `Overlay`.
+Unless your WMS service is optimized for tiling, the default should provide the best performance.
+To use the `TileLayer`, set `untiled` to `false`.
+You can also set `tiled` to `true`, which will both use the `TileLayer` backend and
+set `tiled=true` in the WMS request (see [#16](https://github.com/heigeo/leaflet.wms/issues/16).
+
+#### Events
+**`loading`** - fired before requesting external service for map layer content;
+
+**`load`** - fired after data from external service has been received;
+
+**`error`** - forwarded from internal `L.ImageOverlay` instance.
+
+**NB:** `loading` and `load` events are related to layer visual content loading,
+_not_ to information queries like `showWaiting()` and `hideWaiting()` hooks described below.
 
 `L.WMS.Source` provides two functions for toggling on and off individual WMS layers (`addSubLayer` and `removeSubLayer`, respectively).  That said, it is usually more convenient to use `L.WMS.Layer` instances (described next).
 
@@ -165,7 +193,7 @@ var MySource = L.WMS.Source.extend({
 });
 ```
 
-The following hooks are available:
+The following `WMS.Source` hooks are available:
 
 Name | Description
 -----|-------------
@@ -174,8 +202,8 @@ Name | Description
 `ajax(url, callback)` | Actual AJAX call.  The default implementation is a rudimentary `XMLHttpRequest` wrapper.  Override this if you want to use jQuery or something with more robust support for older browsers.  If you override this, be sure to preserve the value of `this` when calling the callback function (e.g. `callback.call(this, result)`).
 `parseFeatureInfo(result, url)` | Parse the AJAX response into HTML
 `showFeatureInfo(latlng, info)` | Display parsed AJAX response to the user (e.g in a popup)
-`showWaiting()` | Start AJAX wait animation (spinner, etc.)
-`hideWaiting()` | Stop AJAX wait animation
+`showWaiting()` | Start AJAX wait animation (spinner, etc.) during layer info request
+`hideWaiting()` | Stop AJAX wait animation after layer info request is completed
 
 [Leaflet]: http://leafletjs.com
 [esri-leaflet]: https://github.com/Esri/esri-leaflet

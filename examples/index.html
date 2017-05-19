@@ -23,12 +23,13 @@
       allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
     <iframe src="http://ghbtns.com/github-btn.html?user=heigeo&repo=leaflet.wms&type=fork&count=true"
       allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
-      
+
     <h3>Overlay ("Single-Tile"/Untiled Mode)</h3>
     <p>Click the map to get information about the underlying data.</p>
     <form>
       <label for="range-overlay-map">Opacity</label>
       <input id="range-overlay-map" type="range" min=0 max=1 step=0.1 value=1>
+      <span id="overlay-map-status">LOADING...</span>
     </form>
     <div id="overlay-map"></div>
     <h3>Tiled Layer</h3>
@@ -36,6 +37,7 @@
     <form>
       <label for="range-tiled-map">Opacity</label>
       <input id="range-tiled-map" type="range" min=0 max=1 step=0.1 value=1>
+      <span id="tiled-map-status">LOADING...</span>
     </form>
     <div id="tiled-map"></div>
   </body>

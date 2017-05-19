@@ -124,7 +124,7 @@ To use the `TileLayer`, set `untiled` to `false`.
 You can also set `tiled` to `true`, which will both use the `TileLayer` backend and
 set `tiled=true` in the WMS request (see [#16](https://github.com/heigeo/leaflet.wms/issues/16).
 
-`L.WMS.Source` forwards all `L.WMS.Overlay` events and provides two functions for toggling on and off individual WMS layers (`addSubLayer` and `removeSubLayer`, respectively).  That said, it is usually more convenient to use `L.WMS.Layer` instances (described next).
+`L.WMS.Source` forwards all `L.WMS.Overlay` or `L.WMS.TileLayer` events and provides two functions for toggling on and off individual WMS layers (`addSubLayer` and `removeSubLayer`, respectively).  That said, it is usually more convenient to use `L.WMS.Layer` instances (described next).
 
 ```javascript
 var options = {'transparent': true};

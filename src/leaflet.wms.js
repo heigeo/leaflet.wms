@@ -59,9 +59,13 @@ wms.Source = L.Layer.extend({
         this._url = url;
         this._subLayers = {};
         this._overlay = this.createOverlay(this.options.untiled);
-        // this._overlay.on('wms.loading', L.bind(this.fire, this, 'wms.loading'));
-        // this._overlay.on('wms.load', L.bind(this.fire, this, 'wms.load'));
-      this._overlay.addEventParent(this);
+
+        var events = this.options.untiled ? ['error','wms.load','wms.loading'] :
+          ['load','loading','tileerror'];
+
+        for (var i = 0, ev; (ev=events[i]); i += 1) {
+            this._overlay.on(ev, L.bind(this.fire, this, ev));
+        }
     },
 
     'createOverlay': function(untiled) {
@@ -384,11 +388,11 @@ wms.Overlay = L.Layer.extend({
         var bounds = this._map.getBounds();
         var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
         overlay.addTo(this._map);
-        this.fire('wms.loading',{layer:this},true);
+        this.fire('wms.loading');
         overlay.on('error', L.bind(this.fire, this, 'error'));
         overlay.once('load', _swap, this);
         function _swap() {
-            this.fire('wms.load',{layer:this},true);
+            this.fire('wms.load');
             if (!this._map) {
                 return;
             }

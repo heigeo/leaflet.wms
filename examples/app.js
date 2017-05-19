@@ -33,7 +33,8 @@ function createMap(div, tiled) {
             "tiled": tiled
         }
     );
-    _count(0);
+    source.on('loading', _count.bind(null, 1));
+    source.on('load', _count.bind(null, -1));
     source.on('wms.loading', _count.bind(null, 1));
     source.on('wms.load', _count.bind(null, -1));
     var layers = {
@@ -56,6 +57,7 @@ function createMap(div, tiled) {
         statusEl.style.visibility = "visible";
       } else {
         statusEl.style.visibility = "hidden";
+        count = 0;   // Because repeated 'load' events initially.
       }
     }
 }
@@ -84,4 +86,3 @@ return {
 };
 
 });
-

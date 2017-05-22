@@ -324,14 +324,15 @@ wms.Overlay = L.Layer.extend({
         this._url = url;
 
         // Move WMS parameters to params object
-        var params = {};
+        var params = {}, opts = {};
         for (var opt in options) {
-             if (!(opt in this.options)) {
+             if (opt in this.options) {
+                 opts[opt] = options[opt];
+             } else {
                  params[opt] = options[opt];
-                 delete options[opt];
              }
         }
-        L.setOptions(this, options);
+        L.setOptions(this, opts);
         this.wmsParams = L.extend({}, this.defaultWmsParams, params);
     },
 

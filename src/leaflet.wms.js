@@ -385,6 +385,7 @@ wms.Overlay = L.Layer.extend({
         overlay.once('load', _swap, this);
         function _swap() {
             if (!this._map) {
+                overlay.remove();
                 return;
             }
             if (overlay._url != this._currentUrl) {

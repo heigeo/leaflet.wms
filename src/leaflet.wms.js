@@ -57,6 +57,7 @@ wms.Source = L.Layer.extend({
             this.options.untiled = false;
         }
         this._url = url;
+        this._orderedSubLayers = [];
         this._subLayers = {};
         this._overlay = this.createOverlay(this.options.untiled);
     },
@@ -115,6 +116,9 @@ wms.Source = L.Layer.extend({
 
     'addSubLayer': function(name) {
         this._subLayers[name] = true;
+        if (this._orderedSubLayers.indexOf(name) > -1) {
+            this._orderedSubLayers.push(name);
+        }
         this.refreshOverlay();
     },
 
@@ -124,7 +128,11 @@ wms.Source = L.Layer.extend({
     },
 
     'refreshOverlay': function() {
-        var subLayers = Object.keys(this._subLayers).join(",");
+        var orderedSubLayers = this._orderedSubLayers;
+        var subLayers = Object.keys(this._subLayers)
+            .sort(function(a,b){
+                return orderedSubLayers.indexOf(a) > orderedSubLayers.indexOf(b)
+            }).join(",")
         if (!this._map) {
             return;
         }

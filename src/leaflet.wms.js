@@ -117,7 +117,7 @@ wms.Source = L.Layer.extend({
     'addSubLayer': function(name) {
         this._subLayers[name] = true;
         if (this._internalSubLayers.indexOf(name) > -1) {
-          this._internalSubLayers.push(name);
+            this._internalSubLayers.push(name);
         }
         this.refreshOverlay();
     },
@@ -131,7 +131,7 @@ wms.Source = L.Layer.extend({
         var internalSubLayers = this._internalSubLayers;
         var subLayers = Object.keys(this._subLayers)
             .sort(function(a,b){
-              return internalSubLayers.indexOf(a) > internalSubLayers.indexOf(b)
+                return internalSubLayers.indexOf(a) > internalSubLayers.indexOf(b)
             }).join(",")
         if (!this._map) {
             return;

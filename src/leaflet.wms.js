@@ -275,8 +275,8 @@ wms.Layer = L.Layer.extend({
     }
 });
 
-wms.layer = function(source, options) {
-    return new wms.Layer(source, options);
+wms.layer = function(source, layerName, options) {
+    return new wms.Layer(source, layerName, options);
 };
 
 // Cache of sources for use with wms.Layer auto-source option

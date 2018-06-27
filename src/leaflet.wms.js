@@ -380,7 +380,17 @@ wms.Overlay = L.Layer.extend({
         // Keep current image overlay in place until new one loads
         // (inspired by esri.leaflet)
         var bounds = this._map.getBounds();
-        var overlay = L.imageOverlay(url, bounds, {'opacity': 0});
+        
+     	var opt= {'opacity': 0};
+		
+		if (this.options.zIndex)
+			opt.zIndex=this.options.zIndex;
+        
+		if (this.options.pane)
+			opt.pane=this.options.pane;
+        
+        var overlay = L.imageOverlay(url, bounds, opt);
+        
         overlay.addTo(this._map);
         overlay.once('load', _swap, this);
         function _swap() {

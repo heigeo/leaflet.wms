@@ -20,13 +20,13 @@
         // Namespace
         this.L.WMS = this.L.wms = factory(this.L);
     }
-}(function (L) {
-
-// Module object
-var wms = {};
-
-// Quick shim for Object.keys()
-if (!('keys' in Object)) {
+  }(function (L) {
+  
+  // Module object
+  var wms = {};
+  
+  // Quick shim for Object.keys()
+  if (!('keys' in Object)) {
     Object.keys = function(obj) {
         var result = [];
         for (var i in obj) {
@@ -36,21 +36,21 @@ if (!('keys' in Object)) {
         }
         return result;
     };
-}
-
-/*
- * wms.Source
- * The Source object manages a single WMS connection.  Multiple "layers" can be
- * created with the getLayer function, but a single request will be sent for
- * each image update.  Can be used in non-tiled "overlay" mode (default), or
- * tiled mode, via an internal wms.Overlay or wms.TileLayer, respectively.
- */
-wms.Source = L.Layer.extend({
+  }
+  
+  /*
+  * wms.Source
+  * The Source object manages a single WMS connection.  Multiple "layers" can be
+  * created with the getLayer function, but a single request will be sent for
+  * each image update.  Can be used in non-tiled "overlay" mode (default), or
+  * tiled mode, via an internal wms.Overlay or wms.TileLayer, respectively.
+  */
+  wms.Source = L.Layer.extend({
     'options': {
         'untiled': true,
         'identify': true
     },
-
+  
     'initialize': function(url, options) {
         L.setOptions(this, options);
         if (this.options.tiled) {
@@ -60,7 +60,7 @@ wms.Source = L.Layer.extend({
         this._subLayers = {};
         this._overlay = this.createOverlay(this.options.untiled);
     },
-
+  
     'createOverlay': function(untiled) {
         // Create overlay with all options other than untiled & identify
         var overlayOptions = {};
@@ -75,11 +75,11 @@ wms.Source = L.Layer.extend({
             return wms.tileLayer(this._url, overlayOptions);
         }
     },
-
+  
     'onAdd': function() {
         this.refreshOverlay();
     },
-
+  
     'getEvents': function() {
         if (this.options.identify) {
             return {'click': this.identify};
@@ -87,42 +87,42 @@ wms.Source = L.Layer.extend({
             return {};
         }
     },
-
+  
     'setOpacity': function(opacity) {
          this.options.opacity = opacity;
          if (this._overlay) {
              this._overlay.setOpacity(opacity);
          }
     },
-    
+  
     'bringToBack': function() {
          this.options.isBack = true;
          if (this._overlay) {
              this._overlay.bringToBack();
          }
     },
-
+  
     'bringToFront': function() {
          this.options.isBack = false;
          if (this._overlay) {
              this._overlay.bringToFront();
          }
     },
-
+  
     'getLayer': function(name) {
         return wms.layer(this, name);
     },
-
+  
     'addSubLayer': function(name) {
         this._subLayers[name] = true;
         this.refreshOverlay();
     },
-
+  
     'removeSubLayer': function(name) {
         delete this._subLayers[name];
         this.refreshOverlay();
     },
-
+  
     'refreshOverlay': function() {
         var subLayers = Object.keys(this._subLayers).join(",");
         if (!this._map) {
@@ -135,12 +135,12 @@ wms.Source = L.Layer.extend({
             this._overlay.addTo(this._map);
         }
     },
-
+  
     'identify': function(evt) {
         // Identify map features in response to map clicks. To customize this
         // behavior, create a class extending wms.Source and override one or
         // more of the following hook functions.
-
+  
         var layers = this.getIdentifyLayers();
         if (!layers.length) {
             return;
@@ -150,34 +150,34 @@ wms.Source = L.Layer.extend({
             this.showFeatureInfo
         );
     },
-
+  
     'getFeatureInfo': function(point, latlng, layers, callback) {
         // Request WMS GetFeatureInfo and call callback with results
         // (split from identify() to faciliate use outside of map events)
         var params = this.getFeatureInfoParams(point, layers),
             url = this._url + L.Util.getParamString(params, this._url);
-
+  
         this.showWaiting();
         this.ajax(url, done);
-
+  
         function done(result) {
             this.hideWaiting();
             var text = this.parseFeatureInfo(result, url);
             callback.call(this, latlng, text);
         }
     },
-
+  
     'ajax': function(url, callback) {
         ajax.call(this, url, callback);
     },
-
+  
     'getIdentifyLayers': function() {
         // Hook to determine which layers to identify
         if (this.options.identifyLayers)
             return this.options.identifyLayers;
         return Object.keys(this._subLayers);
      },
-
+  
     'getFeatureInfoParams': function(point, layers) {
         // Hook to generate parameters for WMS service GetFeatureInfo request
         var wmsParams, overlay;
@@ -199,7 +199,7 @@ wms.Source = L.Layer.extend({
         };
         return L.extend({}, wmsParams, infoParams);
     },
-
+  
     'parseFeatureInfo': function(result, url) {
         // Hook to handle parsing AJAX response
         if (result == "error") {
@@ -209,7 +209,7 @@ wms.Source = L.Layer.extend({
         }
         return result;
     },
-
+  
     'showFeatureInfo': function(latlng, info) {
         // Hook to handle displaying parsed AJAX response to the user
         if (!this._map) {
@@ -217,36 +217,36 @@ wms.Source = L.Layer.extend({
         }
         this._map.openPopup(info, latlng);
     },
-
+  
     'showWaiting': function() {
         // Hook to customize AJAX wait animation
         if (!this._map)
             return;
         this._map._container.style.cursor = "progress";
     },
-
+  
     'hideWaiting': function() {
         // Hook to remove AJAX wait animation
         if (!this._map)
             return;
         this._map._container.style.cursor = "default";
     }
-});
-
-wms.source = function(url, options) {
+  });
+  
+  wms.source = function(url, options) {
     return new wms.Source(url, options);
-};
-
-/*
- * Layer
- * Leaflet "layer" with all actual rendering handled via an underlying Source
- * object.  Can be called directly with a URL to automatically create or reuse
- * an existing Source.  Note that the auto-source feature doesn't work well in
- * multi-map environments; so for best results, create a Source first and use
- * getLayer() to retrieve wms.Layer instances.
- */
-
-wms.Layer = L.Layer.extend({
+  };
+  
+  /*
+  * Layer
+  * Leaflet "layer" with all actual rendering handled via an underlying Source
+  * object.  Can be called directly with a URL to automatically create or reuse
+  * an existing Source.  Note that the auto-source feature doesn't work well in
+  * multi-map environments; so for best results, create a Source first and use
+  * getLayer() to retrieve wms.Layer instances.
+  */
+  
+  wms.Layer = L.Layer.extend({
     'initialize': function(source, layerName, options) {
         L.setOptions(this, options);
         if (!source.addSubLayer) {
@@ -273,33 +273,33 @@ wms.Layer = L.Layer.extend({
     'bringToFront': function() {
         this._source.bringToFront();
     }
-});
-
-wms.layer = function(source, options) {
+  });
+  
+  wms.layer = function(source, options) {
     return new wms.Layer(source, options);
-};
-
-// Cache of sources for use with wms.Layer auto-source option
-var sources = {};
-wms.getSourceForUrl = function(url, options) {
+  };
+  
+  // Cache of sources for use with wms.Layer auto-source option
+  var sources = {};
+  wms.getSourceForUrl = function(url, options) {
     if (!sources[url]) {
         sources[url] = wms.source(url, options);
     }
     return sources[url];
-};
-
-
-// Copy tiled WMS layer from leaflet core, in case we need to subclass it later
-wms.TileLayer = L.TileLayer.WMS;
-wms.tileLayer = L.tileLayer.wms;
-
-/*
- * wms.Overlay:
- * "Single Tile" WMS image overlay that updates with map changes.
- * Portions of wms.Overlay are directly extracted from L.TileLayer.WMS.
- * See Leaflet license.
- */
-wms.Overlay = L.Layer.extend({
+  };
+  
+  
+  // Copy tiled WMS layer from leaflet core, in case we need to subclass it later
+  wms.TileLayer = L.TileLayer.WMS;
+  wms.tileLayer = L.tileLayer.wms;
+  
+  /*
+  * wms.Overlay:
+  * "Single Tile" WMS image overlay that updates with map changes.
+  * Portions of wms.Overlay are directly extracted from L.TileLayer.WMS.
+  * See Leaflet license.
+  */
+  wms.Overlay = L.Layer.extend({
     'defaultWmsParams': {
         'service': 'WMS',
         'request': 'GetMap',
@@ -309,7 +309,7 @@ wms.Overlay = L.Layer.extend({
         'format': 'image/jpeg',
         'transparent': false
     },
-
+  
     'options': {
         'crs': null,
         'uppercase': false,
@@ -319,10 +319,10 @@ wms.Overlay = L.Layer.extend({
         'minZoom': 0,
         'maxZoom': 18
     },
-
+  
     'initialize': function(url, options) {
         this._url = url;
-
+  
         // Move WMS parameters to params object
         var params = {}, opts = {};
         for (var opt in options) {
@@ -335,20 +335,20 @@ wms.Overlay = L.Layer.extend({
         L.setOptions(this, opts);
         this.wmsParams = L.extend({}, this.defaultWmsParams, params);
     },
-
+  
     'setParams': function(params) {
         L.extend(this.wmsParams, params);
         this.update();
     },
-
+  
     'getAttribution': function() {
         return this.options.attribution;
     },
-
+  
     'onAdd': function() {
         this.update();
     },
-
+  
     'onRemove': function(map) {
         if (this._currentOverlay) {
             map.removeLayer(this._currentOverlay);
@@ -358,13 +358,13 @@ wms.Overlay = L.Layer.extend({
             delete this._currentUrl;
         }
     },
-
+  
     'getEvents': function() {
         return {
             'moveend': this.update
         };
     },
-
+  
     'update': function() {
         if (!this._map) {
             return;
@@ -376,7 +376,7 @@ wms.Overlay = L.Layer.extend({
             return;
         }
         this._currentUrl = url;
-
+  
         // Keep current image overlay in place until new one loads
         // (inspired by esri.leaflet)
         var bounds = this._map.getBounds();
@@ -403,34 +403,44 @@ wms.Overlay = L.Layer.extend({
             if (this.options.isBack === false) {
                 overlay.bringToFront();
             }
+            if (this.options.zIndex !== undefined) {
+              overlay.setZIndex(this.options.zIndex);
+          }
         }
         if ((this._map.getZoom() < this.options.minZoom) ||
             (this._map.getZoom() > this.options.maxZoom)){
             this._map.removeLayer(overlay);
         }
     },
-
+  
     'setOpacity': function(opacity) {
          this.options.opacity = opacity;
          if (this._currentOverlay) {
              this._currentOverlay.setOpacity(opacity);
          }
     },
-
+  
     'bringToBack': function() {
         this.options.isBack = true;
         if (this._currentOverlay) {
             this._currentOverlay.bringToBack();
         }
     },
-
+  
     'bringToFront': function() {
         this.options.isBack = false;
         if (this._currentOverlay) {
             this._currentOverlay.bringToFront();
         }
     },
-
+  
+    'setZIndex': function(zIndex) {
+      this.options.zIndex = zIndex;
+        if (this._currentOverlay) {
+            this._currentOverlay.setZIndex(zIndex);
+        }
+    },
+  
     // See L.TileLayer.WMS: onAdd() & getTileUrl()
     'updateWmsParams': function(map) {
         if (!map) {
@@ -444,7 +454,7 @@ wms.Overlay = L.Layer.extend({
         var projectionKey = wmsVersion >= 1.3 ? 'crs' : 'srs';
         var nw = crs.project(bounds.getNorthWest());
         var se = crs.project(bounds.getSouthEast());
-
+  
         // Assemble WMS parameter string
         var params = {
             'width': size.x,
@@ -456,29 +466,29 @@ wms.Overlay = L.Layer.extend({
             [se.y, nw.x, nw.y, se.x] :
             [nw.x, se.y, se.x, nw.y]
         ).join(',');
-
+  
         L.extend(this.wmsParams, params);
     },
-
+  
     'getImageUrl': function() {
         var uppercase = this.options.uppercase || false;
         var pstr = L.Util.getParamString(this.wmsParams, this._url, uppercase);
         return this._url + pstr;
     }
-});
-
-wms.overlay = function(url, options) {
+  });
+  
+  wms.overlay = function(url, options) {
     return new wms.Overlay(url, options);
-};
-
-// Simple AJAX helper (since we can't assume jQuery etc. are present)
-function ajax(url, callback) {
+  };
+  
+  // Simple AJAX helper (since we can't assume jQuery etc. are present)
+  function ajax(url, callback) {
     var context = this,
         request = new XMLHttpRequest();
     request.onreadystatechange = change;
     request.open('GET', url);
     request.send();
-
+  
     function change() {
         if (request.readyState === 4) {
             if (request.status === 200) {
@@ -488,8 +498,9 @@ function ajax(url, callback) {
             }
         }
     }
-}
-
-return wms;
-
-}));
+  }
+  
+  return wms;
+  
+  }));
+  

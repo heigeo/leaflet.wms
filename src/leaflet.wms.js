@@ -398,9 +398,7 @@ wms.Overlay = L.Layer.extend({
                 this._map.removeLayer(this._currentOverlay);
             }
             this._currentOverlay = overlay;
-            overlay.setOpacity(
-                this.options.opacity ? this.options.opacity : 1
-            );
+            overlay.setOpacity(this.options.opacity || 0);
             if (this.options.isBack === true) {
                 overlay.bringToBack();
             }

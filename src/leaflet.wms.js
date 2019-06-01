@@ -80,6 +80,9 @@ wms.Source = L.Layer.extend({
         this.refreshOverlay();
     },
 
+    'onRemove': function() {
+    },
+
     'getEvents': function() {
         if (this.options.identify) {
             return {'click': this.identify};
@@ -263,6 +266,7 @@ wms.Layer = L.Layer.extend({
     },
     'onRemove': function() {
         this._source.removeSubLayer(this._name);
+        this._source.removeFrom(this._map);
     },
     'setOpacity': function(opacity) {
         this._source.setOpacity(opacity);
@@ -394,9 +398,7 @@ wms.Overlay = L.Layer.extend({
                 this._map.removeLayer(this._currentOverlay);
             }
             this._currentOverlay = overlay;
-            overlay.setOpacity(
-                this.options.opacity ? this.options.opacity : 1
-            );
+            overlay.setOpacity(this.options.opacity || 0);
             if (this.options.isBack === true) {
                 overlay.bringToBack();
             }

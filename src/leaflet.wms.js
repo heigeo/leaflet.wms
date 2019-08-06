@@ -80,6 +80,16 @@ wms.Source = L.Layer.extend({
         this.refreshOverlay();
     },
 
+    onRemove: function() {
+        var subLayers = Object.keys(this._subLayers).join(",");
+        if (!this._map) {
+            return
+        }
+        if (subLayers) {
+            this._overlay.remove();
+        }
+    },
+
     'getEvents': function() {
         if (this.options.identify) {
             return {'click': this.identify};

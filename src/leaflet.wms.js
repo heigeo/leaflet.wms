@@ -48,7 +48,9 @@ if (!('keys' in Object)) {
 wms.Source = L.Layer.extend({
     'options': {
         'untiled': true,
-        'identify': true
+        'identify': true,
+        'bringToBack': false,
+        'bringToFront': false
     },
 
     'initialize': function(url, options) {
@@ -59,6 +61,13 @@ wms.Source = L.Layer.extend({
         this._url = url;
         this._subLayers = {};
         this._overlay = this.createOverlay(this.options.untiled);
+
+        if(this.options.bringToBack) {
+            this.bringToBack();
+        }
+        if(this.options.bringToFront) {
+            this.bringToFront();
+        }
     },
 
     'createOverlay': function(untiled) {

@@ -254,7 +254,6 @@
      * multi-map environments; so for best results, create a Source first and use
      * getLayer() to retrieve wms.Layer instances.
      */
-
     wms.Layer = L.Layer.extend({
         'initialize': function(source, layerName, options) {
             L.setOptions(this, options);

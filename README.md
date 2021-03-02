@@ -79,7 +79,7 @@ This class is (currently) identical to [L.TileLayer.WMS].  It provides a simple 
 
 ```javascript
 var tiles = L.WMS.tileLayer("http://example.com/mapserv", {
-    'tileSize': 512,
+    'tileSize': 512, //deafult 256
     'layers': 'layer1,layer2',
     'transparent': true
 });

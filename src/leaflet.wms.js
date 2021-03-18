@@ -381,13 +381,13 @@ wms.Overlay = L.Layer.extend({
         // (inspired by esri.leaflet)
         var bounds = this._map.getBounds();
         
-     	var opt= {'opacity': 0};
+     	var opt= {'opacity': 0, 'zIndex': null, 'pane': null};
 		
-		if (this.options.zIndex)
-			opt.zIndex=this.options.zIndex;
-        
-		if (this.options.pane)
-			opt.pane=this.options.pane;
+	if (this.options.zIndex)
+		opt.zIndex=this.options.zIndex;
+
+	if (this.options.pane)
+		opt.pane=this.options.pane;
         
         var overlay = L.imageOverlay(url, bounds, opt);
         
